@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nebula Notes — Premium Note Taking App</title>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Bootstrap Icons CSS CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+    <div class="container fade-in">
+        <!-- Header Section -->
+        <header class="glass-panel" style="padding: 1.5rem 2rem;">
+            <div class="logo-section">
+                <h1 class="text-gradient">Nebula Notes</h1>
+                <p>Organize your thoughts in space</p>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search title, content, or tags...">
+                <i class="bi bi-search"></i>
+            </div>
+        </header>
+
+        <!-- Filters Bar -->
+        <div class="filter-bar">
+            <div class="filter-chip active" data-filter="all">
+                <i class="bi bi-grid"></i> All Notes
+            </div>
+            <div class="filter-chip" data-filter="pinned">
+                <i class="bi bi-pin-angle-fill"></i> Pinned
+            </div>
+            <div class="filter-chip" data-filter="default">
+                <span class="color-option color-swatch-default" style="width: 12px; height: 12px; display: inline-block;"></span> Default
+            </div>
+            <div class="filter-chip" data-filter="blue">
+                <span class="color-option color-swatch-blue" style="width: 12px; height: 12px; display: inline-block;"></span> Blue
+            </div>
+            <div class="filter-chip" data-filter="cyan">
+                <span class="color-option color-swatch-cyan" style="width: 12px; height: 12px; display: inline-block;"></span> Cyan
+            </div>
+            <div class="filter-chip" data-filter="emerald">
+                <span class="color-option color-swatch-emerald" style="width: 12px; height: 12px; display: inline-block;"></span> Emerald
+            </div>
+            <div class="filter-chip" data-filter="amber">
+                <span class="color-option color-swatch-amber" style="width: 12px; height: 12px; display: inline-block;"></span> Amber
+            </div>
+            <div class="filter-chip" data-filter="rose">
+                <span class="color-option color-swatch-rose" style="width: 12px; height: 12px; display: inline-block;"></span> Rose
+            </div>
+            <div class="filter-chip" data-filter="purple">
+                <span class="color-option color-swatch-purple" style="width: 12px; height: 12px; display: inline-block;"></span> Purple
+            </div>
+        </div>
+
+        <!-- Note Composer -->
+        <div class="composer-container" id="composerContainer">
+            <div class="glass-panel composer-card">
+                <!-- Composer Title -->
+                <div class="composer-title-row">
+                    <input type="text" id="composerTitle" placeholder="Title" autocomplete="off">
+                    <button class="composer-pin-btn" id="composerPinBtn" title="Pin Note">
+                        <i class="bi bi-pin-angle"></i>
+                    </button>
+                </div>
+                
+                <!-- Composer Body Content -->
+                <div class="composer-body">
+                    <textarea id="composerTextarea" placeholder="Take a note..." rows="1"></textarea>
+                </div>
+
+                <!-- Composer Tags List -->
+                <div id="composerTagsList" style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.5rem;"></div>
+
+                <!-- Composer Footer Toolbar -->
+                <div class="composer-toolbar">
+                    <div class="toolbar-tools">
+                        <!-- Color Selector -->
+                        <div class="tool-btn" id="composerColorPicker" title="Change Color">
+                            <i class="bi bi-palette"></i>
+                            <div class="color-picker-popover">
+                                <div class="color-option color-swatch-default selected" data-color="default" title="Default"></div>
+                                <div class="color-option color-swatch-blue" data-color="blue" title="Blue"></div>
+                                <div class="color-option color-swatch-cyan" data-color="cyan" title="Cyan"></div>
+                                <div class="color-option color-swatch-emerald" data-color="emerald" title="Emerald"></div>
+                                <div class="color-option color-swatch-amber" data-color="amber" title="Amber"></div>
+                                <div class="color-option color-swatch-rose" data-color="rose" title="Rose"></div>
+                                <div class="color-option color-swatch-purple" data-color="purple" title="Purple"></div>
+                            </div>
+                        </div>
+
+                        <!-- Active Selected Color indicator swatch -->
+                        <div class="color-option color-swatch-default selected" id="selectedColorOption" style="width: 16px; height: 16px; cursor: default; margin-left: 0.25rem;"></div>
+
+                        <!-- Tag Input Container -->
+                        <div style="margin-left: 0.75rem; display: flex; align-items: center; gap: 0.3rem;">
+                            <i class="bi bi-tag" style="color: var(--text-secondary); font-size: 0.9rem;"></i>
+                            <input type="text" id="composerTagsInput" placeholder="Add tag + Enter" style="background: transparent; border: none; outline: none; color: white; font-size: 0.8rem; width: 110px;">
+                        </div>
+                    </div>
+
+                    <div class="composer-actions">
+                        <button class="btn-text" onclick="collapseComposer()">Close</button>
+                        <button class="primary-btn" onclick="saveNote()">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes Section Title -->
+        <h2 class="notes-section-title">
+            <i class="bi bi-journal-text"></i> My Stored Notes
+        </h2>
+
+        <!-- Notes Grid -->
+        <div class="notes-grid" id="notesGrid">
+            <!-- Dynamically populated -->
+        </div>
+    </div>
+
+    <!-- Edit Note Glass Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="glass-panel modal-card">
+            <!-- Modal Title Row -->
+            <div class="modal-title-row">
+                <input type="text" id="editTitle" placeholder="Title">
+                <button class="composer-pin-btn" id="editPinBtn" title="Pin Note">
+                    <i class="bi bi-pin-angle"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body content -->
+            <div class="modal-body">
+                <textarea id="editTextarea" placeholder="Note content..."></textarea>
+            </div>
+
+            <!-- Tags in Modal -->
+            <div style="margin-top: 1rem;">
+                <div id="editTagsList" style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.5rem;"></div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.5rem;">
+                    <i class="bi bi-tag" style="color: var(--text-secondary);"></i>
+                    <input type="text" id="editTagsInput" placeholder="Add tag + Enter" style="background: transparent; border: none; outline: none; color: white; font-size: 0.85rem; width: 100%;">
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <div class="toolbar-tools">
+                    <div class="tool-btn" id="editColorPicker" title="Change Color">
+                        <i class="bi bi-palette"></i>
+                        <div class="color-picker-popover">
+                            <div class="color-option color-swatch-default selected" data-color="default" title="Default"></div>
+                            <div class="color-option color-swatch-blue" data-color="blue" title="Blue"></div>
+                            <div class="color-option color-swatch-cyan" data-color="cyan" title="Cyan"></div>
+                            <div class="color-option color-swatch-emerald" data-color="emerald" title="Emerald"></div>
+                            <div class="color-option color-swatch-amber" data-color="amber" title="Amber"></div>
+                            <div class="color-option color-swatch-rose" data-color="rose" title="Rose"></div>
+                            <div class="color-option color-swatch-purple" data-color="purple" title="Purple"></div>
+                        </div>
+                    </div>
+                    <div class="color-option color-swatch-default selected" id="editColorOption" style="width: 16px; height: 16px; cursor: default; margin-left: 0.25rem;"></div>
+                </div>
+                
+                <div class="composer-actions">
+                    <button class="btn-text" onclick="closeEditModal()">Cancel</button>
+                    <button class="primary-btn" onclick="saveEdit()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>
